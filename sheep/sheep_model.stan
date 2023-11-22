@@ -80,7 +80,7 @@ model {
   for(n in 1:N){  
     real prob_g = mu_growth + beta_g_nao * climate[n] + beta_g_den * density[n] + beta_g_age * age[n] + beta_g_wei * weight[n] + col(W_Y[years[n]],1)[id[n]];
     real lambda_p = mu_productivity + beta_p_den * density[n] + beta_p_age * age[n] + beta_p_wei * weight[n] + col(W_Y[years[n]],2)[id[n]];
-    target += normal_lpdf(growth[n]| prob_g, 0.1);
+    target += normal_lpdf(growth[n]| prob_g, 0.1); // fix variance to a small value
     target += poisson_lpmf(productivity[n]| exp(lambda_p));
     }
 
