@@ -134,7 +134,7 @@ The dataset `cooperation_pred.csv` was used alongside the phylognetic trees `Pru
 
 ### DATA-SPECIFIC INFORMATION FOR: `sheep_data_for_analysis.txt`
 
-1. Number of variables: 10
+1. Number of variables: 9
 
 2. Number of cases/rows: 2497
 
