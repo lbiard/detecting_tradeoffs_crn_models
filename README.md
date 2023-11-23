@@ -47,7 +47,7 @@ This repository hosts data and R code for Bliard L., Martin JS., Paniw M., Blums
 
 ## SHARING/ACCESS INFORMATION
 
-1. Licenses/restrictions placed on the data: GPL-3
+1. Licenses/restrictions placed on the data: CC0
 
 2. Links to publications that cite or use the data: ADD DOI 
 
