@@ -92,7 +92,6 @@ The data `marmot_data_for_analysis.txt` is needed to run the Stan model `marmot_
 
 The data `sheep_data_for_analysis.txt` is needed to run the Stan model `sheep_model.stan` using the script `sheep_analysis.R`. This will produce Figure 5.
 
-The dataset `cooperation_pred.csv` was used alongside the phylognetic trees `Prum_Jetz_Cooney_9993.tree`, `output_ericson.nex`, and `output_hackett.nex`, to perform the analyses and produce the figures present in the article, using the R script `analysis_script.R`.
 
 ## METHODOLOGICAL INFORMATION
  
