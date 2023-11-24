@@ -105,6 +105,8 @@ The data `sheep_data_for_analysis.txt` is needed to run the Stan model `sheep_mo
 
 4. People involved with data formatting and analysis: Bliard L., Martin JS., Paniw M., Childs DZ, Ozgul A.
 
+5. for more general informations regarding the methods, see https://doi.org/10.32942/X2D89H and the related code https://github.com/Jordan-Scott-Martin/covariance-reaction-norms
+
 
 ### DATA-SPECIFIC INFORMATION FOR: `marmot_data_for_analysis.txt`
 
