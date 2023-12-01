@@ -127,6 +127,11 @@ p <- ggplot(plot.dat, aes(x = x2.sim, y = bayes.c.eff.mean)) +
   xlab("Winter NAO")+
   ylab("Observation-level correlation")+
   theme_bw() +
+  coord_cartesian(clip = "off") + 
+  annotation_custom(grid::textGrob(expression(~ italic("(-) Environmental harshness (+)")),
+                                   gp=grid::gpar(fontsize=10)),
+                    xmin = mean(x2.sim), xmax = mean(x2.sim), ymin = -1.48, ymax = -1.48) +
+  theme(plot.margin = margin(5.5,5.5,14,5.5))+
   theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank())+
   theme(axis.title = element_text(size=16),
         axis.text.y = element_text(size=14),
@@ -164,6 +169,11 @@ q <- ggplot(plot.dat, aes(x = x2.sim, y = bayes.c.eff.mean)) +
   xlab("Population density")+
   ylab("Observation-level correlation")+
   theme_bw() +
+  coord_cartesian(clip = "off") + 
+  annotation_custom(grid::textGrob(expression(~ italic("(-) Environmental harshness (+)")),
+                                   gp=grid::gpar(fontsize=10)),
+                    xmin = mean(x2.sim), xmax = mean(x2.sim), ymin = -1.48, ymax = -1.48) +
+  theme(plot.margin = margin(5.5,5.5,14,5.5))+
   theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank())+
   theme(axis.title = element_text(size=16),
         axis.text.y = element_text(size=14),
@@ -239,6 +249,7 @@ p2 <- ggplot()+
   coord_cartesian(xlim=c(-1.8,1.8), clip = "off")+
   ylab("")+
   theme_minimal()+
+  theme(plot.margin = margin(20,5.5,5.5,5.5))+
   theme(axis.line.y = element_blank()
         , axis.ticks.y = element_blank()
         , panel.grid.major = element_blank() 
