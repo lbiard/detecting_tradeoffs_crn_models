@@ -1,6 +1,6 @@
 # Detecting context dependent tradeoffs
 
-This repository hosts data and R code for Bliard L., Martin JS., Paniw M., Blumstein, D, Martin JGA., Pemberton JM, Nussey DH, Childs DZ, Ozgul A. Detecting context-dependence in the expression of demographic tradeoffs.
+This repository hosts data and R code for Bliard L., Martin JS., Paniw M., Blumstein, D, Martin JGA., Pemberton JM, Nussey DH, Childs DZ, Ozgul A. Detecting context-dependence in the expression of demographic tradeoffs. https://doi.org/10.32942/X2D31R 
 
 
 ## GENERAL INFORMATION
@@ -49,7 +49,7 @@ This repository hosts data and R code for Bliard L., Martin JS., Paniw M., Blums
 
 1. Licenses/restrictions placed on the data: CC-BY 4.0
 
-2. Links to publications that cite or use the data: ADD DOI 
+2. Links to publications that cite or use the data: https://doi.org/10.32942/X2D31R 
 
 3. Links to other publicly accessible locations of the data: None
 
