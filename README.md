@@ -12,7 +12,7 @@ This repository hosts data and R code for Bliard L., Martin JS., Paniw M., Blums
         A.  Name: Louis Bliard
 		Institution: University of Zurich
 		Address: Winterthurerstrasse 190, 8057 Zurich, Switzerland
-		Email: louis.bliard@ieu.uzh.ch / louis.bliard@evobio.eu
+		Email: louis.bliard@uzh.ch
 	
         B.  Name: Jordan S Martin
 		Institution: University of Zurich
