@@ -63,6 +63,7 @@ This repository hosts data and R code for Bliard L., Martin JS., Paniw M., Blums
 
 1. File List: 
 - `figure_1_bias.R`
+- `functions_postprocessing.R`
 
 - `simulate_data_non_repeated_crn.R`
 - `non_repeated_crn_analysis.R`
@@ -83,6 +84,8 @@ This repository hosts data and R code for Bliard L., Martin JS., Paniw M., Blums
 2. Relationship between files, if important: 
 
 The R script `figure_1_bias.R` highlights the amount of bias in estimating among-individual correlations from observation-level correlations. This will produce Figure 1.
+
+The R script `functions_postprocessing.R` contains some functions for postprocessing of the CRN model output.
 
 The script `simulate_data_non_repeated_crn.R` simulates the data needed to then run the Stan model `non_repeated_crn_model.stan` using the script `non_repeated_crn_analysis.R`. This will produce Figure 2.
 
