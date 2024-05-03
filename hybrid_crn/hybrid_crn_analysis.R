@@ -1,4 +1,4 @@
-# Last modified 24/11/2023
+# Last modified 03/05/2024
 
 # This R script can be used to run the Hybrid CRN model on simulated data
 # First you need to run the R script "simulate_data_hybrid_crn.R" to create the simulated datasets.
@@ -28,22 +28,88 @@ df <- df1
 # make the fecundity dataset (i.e. nrow = number of breeding attempts)
 df_fecundity <- df[!duplicated(df[,c(1,3)]),]
 
+
+################################
+#### dataset for Stan model ####
+################################
+
+X <- as.matrix(cbind(rep(1, length(unique(df$year))), 
+                     scale(unique(df[,c("year","climate")])$climate)[,1]))
+
+X_g = as.matrix(cbind(rep(1, dim(df)[1]), 
+                      scale(df$climate)[,1]))
+
+X_f = as.matrix(cbind(rep(1, dim(df_fecundity)[1]),
+                      scale(df_fecundity$climate)[,1]))
+
+
+cn <- as.numeric(table(as.numeric(as.factor(df_fecundity$year))))
+
+#create empty cmat
+cmat <- matrix(NA, 
+               nrow = length(unique(df$year)), 
+               ncol =  max(as.numeric(table(as.numeric(as.factor(df_fecundity$year))))))
+
+#fill cmat
+temporary <- as.data.frame(cbind(as.numeric(as.factor(df_fecundity$year)),
+                                 as.numeric(as.factor(df_fecundity$momid))))
+for (i in 1:length(unique(df$year))) {
+  cmat[i, 1:cn[i]] <- temporary$V2[temporary$V1 == i]
+}
+cmat_n = apply(cmat, 1, FUN = function(x) sum(!is.na(x)) )
+cmat[is.na(cmat)] = 0 #remove NAs
+
+temp = t(cmat)
+corder = data.frame(id = temp[temp>0], c = rep(seq(1:nrow(cmat)), times = cmat_n))
+
+idc_f = match(paste0(as.numeric(as.factor(df_fecundity$momid)),
+                     as.numeric(as.factor(df_fecundity$year)),
+                     sep="."), 
+              paste0(corder$id,corder$c,sep="."))
+
+idc_g = match(paste0(as.numeric(as.factor(df$momid)),
+                     sep=".",
+                     as.numeric(as.factor(df$year))), 
+              paste0(corder$id,sep=".",corder$c))
+
+
+rownames(df) <- NULL
+
+
 stan.df =
-  list(N = nrow(df),
+  list(N = nrow(df),                      # number of observation offpring mass
        M = nrow(df_fecundity),
-       I = length(unique(df$momid)),
-       Y = length(unique(df$year)),
-       D = 2,
-       id_g = as.numeric(as.factor(df$momid)),
+       C = length(unique(df$year)),     # number of years
+       I = length(unique(df$momid)),        # number of mothers
+       D = 2,                             # numver of traits
+       P_y = 2,
+       P_g = 2,
+       P_f = 2,
+       
+       id_g = as.numeric(as.factor(df$momid)),           
+       c_id_g = as.numeric(as.factor(df$year)),
+       idc_g = idc_g,
+       id_g_lm = as.numeric(rownames(df)),
+       
        id_f = as.numeric(as.factor(df_fecundity$momid)),
-       years_g = df$year, 
-       years_f = df_fecundity$year, 
-       climate_g = df$climate,
-       climate_f = df_fecundity$climate,
-       climate_y = unique(df$climate),
-       growth = df$mass,
-       productivity = df_fecundity$clutch_size
+       c_id_f = as.numeric(as.factor(df_fecundity$year)),
+       idc_f = idc_f,
+       id_f_lm = as.numeric(rownames(df_fecundity)),
+       
+       X = X,
+       X_g = X_g,
+       X_f = X_f,
+       A = diag(length(unique(df$momid))),
+       
+       cm = max(as.numeric(table(as.numeric(as.factor(df_fecundity$year))))),
+       cmat = cmat,
+       cn = cn,
+       cnt = length(unique(paste(df$momid, df$year))), # number of repro events
+       
+       growth = scale(as.numeric(df$mass))[,1],        # offspring mass (response variable)
+       productivity = df_fecundity$clutch_size   # fecundity (response variable)
   )
+
 
 ####################################
 #### Compile and run Stan model ####
@@ -68,7 +134,7 @@ stanfit <- rstan::read_stan_csv(fit$output_files())
 #stanfit <- read_rds("model_hybrid_crn_output.RDS")
 
 # Open shiny app with diagnostic plot (visualize the chains to check for convergence)
-launch_shinystan(stanfit)
+#launch_shinystan(stanfit)
 
 
 ######################
@@ -88,12 +154,12 @@ dat_plot <- rbind(chain_1, chain_2, chain_3)
 ########################
 
 # predictions across range of climatic values
-x2.sim <- seq(min(stan.df$climate_y), max(stan.df$climate_y), by = 0.02)
+x2.sim <- seq(min(scale(unique(df[,c("year","climate")])$climate)[,1]),
+              max(scale(unique(df[,c("year","climate")])$climate)[,1]), by = 0.02)
 
 int.sim <- matrix(rep(NA, nrow(dat_plot)*length(x2.sim)), nrow = nrow(dat_plot))
 for(i in 1:length(x2.sim)){
-  int.sim[, i] <- (exp(dat_plot$mu_r + dat_plot$beta_r * (x2.sim[i])) /
-                     (1+exp(dat_plot$mu_r + dat_plot$beta_r * (x2.sim[i])))) * 2 - 1
+  int.sim[, i] <- tanh(dat_plot$B_cpcq.1.1 + dat_plot$B_cpcq.2.1 * (x2.sim[i])) 
 }
 
 # calculate quantiles of predictions
@@ -104,8 +170,10 @@ bayes.c.eff.lower.bis <- apply(int.sim, 2, function(x) quantile(x, probs = c(0.2
 bayes.c.eff.upper.bis <- apply(int.sim, 2, function(x) quantile(x, probs = c(0.75)))
 plot.dat <- data.frame(x2.sim, bayes.c.eff.mean, bayes.c.eff.lower, bayes.c.eff.upper, bayes.c.eff.lower.bis, bayes.c.eff.upper.bis)
 
+inv_fun_p <- function(x){(x*sd(unique(df[,c("year","climate")])$climate))+mean(unique(df[,c("year","climate")])$climate)}
+
 # Plot 
-p <- ggplot(plot.dat, aes(x = x2.sim, y = bayes.c.eff.mean)) +
+p <- ggplot(plot.dat, aes(x = inv_fun_p(x2.sim), y = bayes.c.eff.mean)) +
   geom_line(color = "black", alpha = 0.8, size = 1.8)+
   geom_ribbon(aes(ymin = bayes.c.eff.lower, ymax = bayes.c.eff.upper), fill = "black", alpha = 0.1)+
   geom_ribbon(aes(ymin = bayes.c.eff.lower.bis, ymax = bayes.c.eff.upper.bis), fill = "black", alpha = 0.1)+

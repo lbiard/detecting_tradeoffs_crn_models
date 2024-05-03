@@ -1,4 +1,4 @@
-# Last modified 24/11/2023
+# Last modified 03/05/2024
 
 # This R script can be used to simulate individual-based datasets with a 
 # tradeoff between fecundity and offpsring quality (mass). The expression of this tradeoff is 
