@@ -1,4 +1,4 @@
-# Last modified 24/11/2023
+# Last modified 07/05/2024
 
 # This R script can be used to simulate individual-based datasets with an intraindividual 
 # tradeoff between a mother's fecundity and its growth. The expression of this tradeoff is 
@@ -64,7 +64,7 @@ context_dependent_cor <- function(inds, t, climate){
   
   # parameters for the context dependent correlation value LM  
   intercept_cor_value <- -0.3      
-  slope_env_cor_value <- -0.3
+  slope_env_cor_value <- -0.4
   
   correlation_value <- exp(intercept_cor_value + slope_env_cor_value*env) / 
     (1+exp(intercept_cor_value + slope_env_cor_value*env))
@@ -113,10 +113,14 @@ simulate_mean_vr <- function(inds, t, climate, X2, lh){
   
   env <- climate[t]
   
-  # choose amount of among-id variance in each trait
+  # choose amount of context-dependent among-id variance in each trait
   gamma_survival_ad <- inds$realized_sa * 0.7    
-  gamma_fecundity_ad <- inds$realized_f * 0.5
-  gamma_mass_change <- inds$realized_mass * 0.5
+  gamma_fecundity_ad <- inds$realized_f * 0.4
+  gamma_mass_change <- inds$realized_mass * 0.4
+  
+  # choose amount of fixed heterogeneity in each trait
+  alpha_fecundity <- inds$fixed_h_f * 0.5
+  alpha_mass <- inds$fixed_h_m * 0.5
   
   # parameters for the survival adult glm   
   intercept_survival_ad <- as.numeric(logit(lh[1]))        
@@ -145,7 +149,7 @@ simulate_mean_vr <- function(inds, t, climate, X2, lh){
   ## Fecundity adult GLM ##
   fecundity_ad <- function(env) {
     
-    exp(intercept_fecundity_ad + slope_env_fecundity_ad*env + gamma_fecundity_ad)
+    exp(intercept_fecundity_ad + slope_env_fecundity_ad*env + alpha_fecundity + gamma_fecundity_ad)
     
   }
   
@@ -155,7 +159,7 @@ simulate_mean_vr <- function(inds, t, climate, X2, lh){
   ## Mass change GLM ##
   fun_mass_change <- function(env) {
     
-    intercept_mass_change + slope_env_mass_change*env + gamma_mass_change
+    intercept_mass_change + slope_env_mass_change*env + alpha_mass + gamma_mass_change
     
   }
   
@@ -217,6 +221,8 @@ immigration <- function(inds, t, correlation_matrix, n_recruit){
                          quality_sa= corr.values.new[,1], 
                          quality_f= corr.values.new[,2],
                          quality_mass= corr.values.new[,3],
+                         fixed_h_f = rnorm(n_recruit,0,1),
+                         fixed_h_m = rnorm(n_recruit,0,1),
                          realized_sa= 0,
                          realized_f= 0,
                          realized_mass= 0)
@@ -260,9 +266,9 @@ for (lh in 1:dim(lhs)[1]) {
         
         
         ### create initial population
-        inds <- as.data.frame(array(data = 0, dim = c(n_recruit[sample_size], 12)))   # initial population at time step 0
+        inds <- as.data.frame(array(data = 0, dim = c(n_recruit[sample_size], 14)))   # initial population at time step 0
         colnames(inds) <- c("id", "year", "age", "survival", "productivity", "growth",
-                            "quality_sa", "quality_f", "quality_mass",
+                            "quality_sa", "quality_f", "quality_mass", "fixed_h_f", "fixed_h_m",
                             "realized_sa", "realized_f", "realized_mass")
         inds$id <- 1:n_recruit[sample_size]
         
@@ -273,12 +279,15 @@ for (lh in 1:dim(lhs)[1]) {
                                        0, rho, 1),
                                      ncol = 3, nrow = 3)
         
-        corr.values <- matrix(0, nrow = n_recruit[sample_size], ncol = 3)
+        #corr.values <- matrix(0, nrow = n_recruit[sample_size], ncol = 3)
         corr.values <- mvrnorm(n_recruit[sample_size], mu=rep(0,nrow(correlation_matrix)), Sigma=correlation_matrix) 
         
         inds$quality_sa <- corr.values[,1]  # survival adult individual heterogeneity
         inds$quality_f <- corr.values[,2]  # fecundity individual heterogeneity
         inds$quality_mass <- corr.values[,3]
+        
+        inds$fixed_h_f <- rnorm(n_recruit[sample_size],0,1)
+        inds$fixed_h_m <- rnorm(n_recruit[sample_size],0,1)
         
         cor_matrix_tradeoff <- correlation_matrix[c(2,3), c(2,3)]
         
@@ -340,9 +349,9 @@ inds_hist_storage <- lapply(seq_along(inds_hist_storage), function(x) merge(inds
                                                                             by.x = "year", by.y = "ye"))
 # get expected effect size
 expected_cor <- lapply(inds_hist_storage,
-                 function(x) ddply(x, "year",
-                                   summarize,
-                                   correlation_year = cor(realized_mass, realized_f))[,2])
+                       function(x) ddply(x, "year",
+                                         summarize,
+                                         correlation_year = cor(realized_mass, realized_f))[,2])
 
 expected_cor <- lapply(seq_along(expected_cor), function(x) cbind(expected_cor[[x]], climate_storage[[x]][1]))
 expected_cor <- lapply(expected_cor, setNames, c("expected_correlation", "climate"))
