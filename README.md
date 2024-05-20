@@ -1,11 +1,11 @@
 # Detecting context dependent tradeoffs
 
-This repository hosts data and R code for Bliard L., Martin JS., Paniw M., Blumstein, D, Martin JGA., Pemberton JM, Nussey DH, Childs DZ, Ozgul A. Detecting context-dependence in the expression of demographic tradeoffs. https://doi.org/10.32942/X2D31R 
+This repository hosts data and R code for Bliard L., Martin JS., Paniw M., Blumstein, D, Martin JGA., Pemberton JM, Nussey DH, Childs DZ, Ozgul A. Detecting context-dependence in the expression of life history tradeoffs. https://doi.org/10.32942/X2D31R 
 
 
 ## GENERAL INFORMATION
 
-1. Title: Data and scripts from "Detecting context-dependence in the expression of demographic tradeoffs".
+1. Title: Data and scripts from "Detecting context-dependence in the expression of life history tradeoffs".
 
 2. Author Information:
 	
@@ -55,7 +55,7 @@ This repository hosts data and R code for Bliard L., Martin JS., Paniw M., Blums
 
 4. Was data derived from another source? NA
 
-5. Recommended citation for this dataset: Bliard L., Martin JS., Paniw M., Blumstein, D, Martin JGA., Pemberton JM, Nussey DH, Childs DZ, Ozgul A. (XXXX). Detecting context-dependence in the expression of demographic tradeoffs [Data set].
+5. Recommended citation for this dataset: Bliard L., Martin JS., Paniw M., Blumstein, D, Martin JGA., Pemberton JM, Nussey DH, Childs DZ, Ozgul A. (XXXX). Detecting context-dependence in the expression of life history tradeoffs [Data set].
 
 
 
