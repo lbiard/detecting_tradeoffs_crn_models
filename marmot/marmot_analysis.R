@@ -137,10 +137,10 @@ stan.df =
 ########################
 
 # set your own path, where the stan model file is
-setwd("~/My Drive/phd/phd_simulation/Chapter 2/models_revision/marmot")
+setwd("~/marmot")
 
 # Compile model
-mod <- cmdstan_model("updated_model_marmot.stan"
+mod <- cmdstan_model("marmot_model.stan"
                      , stanc_options = list("O1")
 )
 
