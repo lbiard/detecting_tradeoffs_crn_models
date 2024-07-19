@@ -1,4 +1,4 @@
-# Last modified 03/05/2024
+# Last modified 19/07/2024
 
 #####################################################
 #### clean working environment and load packages ####
@@ -218,7 +218,7 @@ CRN_fit <- rstan::read_stan_csv(fit$output_files())
 
 # Save and load output
 #saveRDS(CRN_fit, "model_marmot_output.RDS")
-#stanfit <- read_rds("model_marmot_output.RDS")
+#CRN_fit <- read_rds("model_marmot_output.RDS")
 
 # Open shiny app with diagnostic plot (visualize the chains to check for convergence)
 launch_shinystan(CRN_fit)
@@ -396,9 +396,9 @@ wrap_elements(full= (snow_plot | temperature_plot))
 ###########################
 
 #make sure you know the order of the variables in the predictor matrices
-g_effects <- as.data.frame(post$B_mq_g)
-f_effects <- as.data.frame(post$B_mq_f)
-cor_effects <- as.data.frame(post$B_cpcq)
+g_effects <- as.data.frame(post$B_m_g)
+f_effects <- as.data.frame(post$B_m_f)
+cor_effects <- as.data.frame(post$B_cpc)
 
 # change the "9000" to another value if you run chains for less or more iterations than I did (3000 iterations post burn-in * 3 = 9000)
 
@@ -472,10 +472,10 @@ p2 <-ggplot()+
         , panel.grid.minor = element_blank()
   )
 
-# pdf("marmot_plot.pdf", width = 9, height = 10)
-wrap_elements(full= (snow_plot | temperature_plot)) / p2
-# dev.off()
 
+#ragg::agg_tiff("Figure 4.tiff", width = 9, height = 10, units = "in", res = 300)
+wrap_elements(full= (snow_plot | temperature_plot)) / p2
+#dev.off()
 
 
 #################################################
@@ -750,6 +750,7 @@ plot_snow_f
 
 
 ## combine plots 
-# pdf("marmot_supplementary_plot.pdf", width = 12, height = 10)
+
+#ragg::agg_tiff("marmot_supplementary_plot.tiff", width = 12, height = 10, units = "in", res = 300)
 wrap_elements(full= (plot_snow_f | plot_age_f | plot_mass_f) / ((plot_temp_g | plot_snow_g | plot_age_g | plot_mass_g)))
-# dev.off()
+#dev.off()
