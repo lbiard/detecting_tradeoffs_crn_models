@@ -1,4 +1,4 @@
-# Last modified 03/05/2024
+# Last modified 19/07/2024
 
 # This R script can be used to run the Hybrid CRN model on simulated data
 # First you need to run the R script "simulate_data_hybrid_crn.R" to create the simulated datasets.
@@ -143,9 +143,9 @@ stanfit <- rstan::read_stan_csv(fit$output_files())
 
 fit <- stanfit
 
-chain_1 <- fit@sim[["samples"]][[1]][,c(1:7)]
-chain_2 <- fit@sim[["samples"]][[2]][,c(1:7)]
-chain_3 <- fit@sim[["samples"]][[3]][,c(1:7)]
+chain_1 <- fit@sim[["samples"]][[1]][,c("B_m_g.1", "B_m_g.2", "B_m_f.1", "B_m_f.2", "B_cpc.1.1", "B_cpc.2.1", "sd_E")]
+chain_2 <- fit@sim[["samples"]][[2]][,c("B_m_g.1", "B_m_g.2", "B_m_f.1", "B_m_f.2", "B_cpc.1.1", "B_cpc.2.1", "sd_E")]
+chain_3 <- fit@sim[["samples"]][[3]][,c("B_m_g.1", "B_m_g.2", "B_m_f.1", "B_m_f.2", "B_cpc.1.1", "B_cpc.2.1", "sd_E")]
 
 dat_plot <- rbind(chain_1, chain_2, chain_3)
 
@@ -159,7 +159,7 @@ x2.sim <- seq(min(scale(unique(df[,c("year","climate")])$climate)[,1]),
 
 int.sim <- matrix(rep(NA, nrow(dat_plot)*length(x2.sim)), nrow = nrow(dat_plot))
 for(i in 1:length(x2.sim)){
-  int.sim[, i] <- tanh(dat_plot$B_cpcq.1.1 + dat_plot$B_cpcq.2.1 * (x2.sim[i])) 
+  int.sim[, i] <- tanh(dat_plot$B_cpc.1.1 + dat_plot$B_cpc.2.1 * (x2.sim[i])) 
 }
 
 # calculate quantiles of predictions
@@ -199,8 +199,8 @@ p
 df.posteriors <- data_frame(Submodel = c(rep("Offspring mass", 3000*3), rep("Litter size", 3000*2))
                             , parameter = c(rep("Intercept", 3000), rep("Climate", 3000), rep("Within-litter variance", 3000)
                                             , rep("Intercept", 3000), rep("Climate", 3000))
-                            , Posterior = c(dat_plot$mu_growth, dat_plot$beta_g, dat_plot$sigma
-                                            , dat_plot$mu_productivity, dat_plot$beta_p))
+                            , Posterior = c(dat_plot$B_m_g.1, dat_plot$B_m_g.2, dat_plot$sd_E
+                                            , dat_plot$B_m_f.1, dat_plot$B_m_f.2))
 
 
 
@@ -268,6 +268,6 @@ q <- ggplot()+
   )
 q
 
-# pdf("hybrid_crn_plot.pdf", width = 9, height = 6)
+# ragg::agg_tiff("Figure 2.tiff", width = 9, height = 6, units = "in", res = 300)
 wrap_elements(full= (p | q))
 # dev.off()
