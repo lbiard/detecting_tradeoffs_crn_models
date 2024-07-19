@@ -1,4 +1,4 @@
-# Last modified 03/05/2024
+# Last modified 19/07/2024
 
 #####################################################
 #### clean working environment and load packages ####
@@ -109,10 +109,10 @@ stan.df =
 ########################
 
 # set your own path, where the stan model is
-setwd("~/My Drive/phd/phd_simulation/Chapter 2/models_revision/sheep")
+setwd("~/sheep")
 
 # Compile model
-mod <- cmdstan_model("updated_model_sheep.stan"
+mod <- cmdstan_model("sheep_model.stan"
                      , stanc_options = list("O1")
 )
 
@@ -366,9 +366,9 @@ wrap_elements(full= (nao_plot | density_plot))
 ###########################
 
 #make sure you know the order of the variables in the predictor matrices
-g_effects <- as.data.frame(post$B_mq_g)
-f_effects <- as.data.frame(post$B_mq_f)
-cor_effects <- as.data.frame(post$B_cpcq)
+g_effects <- as.data.frame(post$B_m_g)
+f_effects <- as.data.frame(post$B_m_f)
+cor_effects <- as.data.frame(post$B_cpc)
 cutpoints <- as.data.frame(post$cutpoint)
 
 # change the "9000" to another value if you run chains for less or more iterations than I did (3000 iterations post burn-in * 3 = 9000)
@@ -444,9 +444,11 @@ p2 <-ggplot()+
         , panel.grid.minor = element_blank()
   )
 
-# pdf("sheep_plot.pdf", width = 9, height = 10)
+
+#ragg::agg_tiff("Figure 5.tiff", width = 9, height = 10, units = "in", res = 300)
 wrap_elements(full= (nao_plot | density_plot)) / p2
-# dev.off()
+#dev.off()
+
 
 
 #################################################
@@ -743,6 +745,7 @@ plot_mass_g
 
 
 ## combine plots 
-# pdf("sheep_association_plot.pdf", width = 12, height = 10)
+
+# ragg::agg_tiff("sheep_association_plot.tiff", width = 12, height = 10, units = "in", res = 300)
 wrap_elements(full= (plot_abundance_f | plot_age_f | plot_mass_f) / ((plot_nao_g | plot_abundance_g | plot_age_g | plot_mass_g)))
 # dev.off()
