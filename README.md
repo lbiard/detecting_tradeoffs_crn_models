@@ -1,6 +1,8 @@
 # Detecting context dependent tradeoffs
 
-This repository hosts data and R code for Bliard L., Martin JS., Paniw M., Blumstein, D, Martin JGA., Pemberton JM, Nussey DH, Childs DZ, Ozgul A. Detecting context dependence in the expression of life history trade-offs. https://doi.org/10.1111/1365-2656.14173 
+This repository hosts data and R code for *Bliard L., *Martin JS., Paniw M., Blumstein, D, Martin JGA., Pemberton JM, Nussey DH, Childs DZ, Ozgul A. Detecting context dependence in the expression of life history trade-offs. https://doi.org/10.1111/1365-2656.14173 
+
+* Shared first authorship
 
 Preprint version: https://doi.org/10.32942/X2D31R 
 
