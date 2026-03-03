@@ -129,7 +129,7 @@ model {
   vector[N] mu_g = mu_growth[id_g_lm] + re_season_g[c_id_g];
   vector[M] mu_f = mu_fecundity[id_f_lm] + re_season_f[c_id_f];
 
-  //scale context-specific multivariate additive genetic effects
+  //scale context-specific multivariate additive phenotypic effects
   matrix[cnt, D] mat_G;
   int pos = 1; //keep track of position 1:cnt
   for(c in 1:C){
@@ -138,7 +138,7 @@ model {
       pos = pos + cn[c];   
   }
         
-//add context-specific genetic effects to linear predictors
+//add context-specific phenotypic effects to linear predictors
   for(n in 1:N){
   mu_g[n]  += col(mat_G,1)[idc_g[n]];
   }
