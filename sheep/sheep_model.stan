@@ -94,7 +94,7 @@ parameters {
   matrix[P_y, ncor] B_cpcq; //RN of canonical partial correlations
 
   //random effects
-  matrix[cnt, D] Z_G; //all context-specific additive genetic values
+  matrix[cnt, D] Z_G; //all context-specific additive phenotypic values
   array[C] vector<lower=0>[D] sd_G; //sd of ind effects
   
   real<lower=0> sd_g;  // year random effects
